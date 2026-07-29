@@ -17,11 +17,11 @@ internal static unsafe class UI
     internal static void Draw()
     {
         ImGuiEx.EzTabBar("Default",
-            ("Settings", Settings, null, true),
-            ("Classes/Jobs", Jobs, null, true),
-            ("Extras", Extras, null, true),
-            ("About", () => AboutTab.Draw(P.Name), null, true),
-            ("Debug".NullWhenFalse(C.Debug), Debug, ImGuiColors.DalamudGrey3, true),
+            ("設定", Settings, null, true),
+            ("職業", Jobs, null, true),
+            ("額外功能", Extras, null, true),
+            ("關於", () => AboutTab.Draw(P.Name), null, true),
+            ("偵錯".NullWhenFalse(C.Debug), Debug, ImGuiColors.DalamudGrey3, true),
             InternalLog.ImGuiTab(C.Debug)
         );
     }
@@ -49,34 +49,34 @@ internal static unsafe class UI
         }
         ImGui.SetCursorPos(cur);
 
-        if (ImGui.Checkbox($"Enable Orbwalker", ref C.Enabled))
+        if (ImGui.Checkbox("啟用 Orbwalker", ref C.Enabled))
         {
             P.Memory.EnableDisableBuffer();
         }
-        ImGui.Checkbox("Controller Mode", ref C.ControllerMode);
-        ImGuiComponents.HelpMarker($"Enable this to configure Controller specific options instead.");
+        ImGui.Checkbox("控制器模式", ref C.ControllerMode);
+        ImGuiComponents.HelpMarker("啟用後改為設定控制器專用選項。");
         ImGui.Separator();
 
         #region Movement
-        ImGui.TextColored(0xFFFFDCEB, $"Movement");
+        ImGui.TextColored(0xFFFFDCEB, "移動");
         ImGuiGroup.BeginGroupBox();
-        ImGuiEx.Text($"Slidecast Window Calibration");
+        ImGuiEx.Text("滑步施法窗口校準");
         ImGuiComponents.HelpMarker(
             "Switch between automatic slidecast window calibration or manually setting a value.\n\n" +
             "\"Automatic\" mode is fully reliable, but will always result in smaller slidecast windows. You may also need to manually configure based on current spell speed or network latency."
             );
         Spacing(!C.IsSlideAuto);
-        ImGuiEx.RadioButtonBool("Automatic", "Manual", ref C.IsSlideAuto, true);
+        ImGuiEx.RadioButtonBool("自動", "手動", ref C.IsSlideAuto, true);
         if (!C.IsSlideAuto)
         {
             Spacing();
             ImGui.SetNextItemWidth(200f);
-            ImGui.SliderFloat("Unlock at, s", ref C.Threshold, 0.1f, 1f);
+            ImGui.SliderFloat("解鎖時間（秒）", ref C.Threshold, 0.1f, 1f);
         }
         ImGui.Spacing();
         ImGui.Separator();
         ImGui.Spacing();
-        ImGuiEx.Text($"Orbwalking Mode");
+        ImGuiEx.Text("Orbwalking 模式");
         ImGuiComponents.HelpMarker(
             "Switch between two available Orbwalking modes:\n\n " +
             "\"Slidecast\" mode is the default and simply prevents player movement until the slidecast window is available, locking movement again to begin the next cast. You must be stationary for the first cast in most cases. \n\n" +
@@ -95,7 +95,7 @@ internal static unsafe class UI
         ImGui.Spacing();
         ImGui.Separator();
         ImGui.Spacing();
-        if (ImGui.Checkbox($"Buffer Initial Cast", ref C.Buffer))
+        if (ImGui.Checkbox("緩衝第一次施法", ref C.Buffer))
         {
             P.Memory.EnableDisableBuffer();
         }
@@ -103,37 +103,37 @@ internal static unsafe class UI
         ImGui.Spacing();
         ImGui.Separator();
         ImGui.Spacing();
-        ImGui.Checkbox($"Block All Movement", ref C.BlockAllMovement);
-        ImGuiComponents.HelpMarker("Blocks all movement when holding down a specified key.");
+        ImGui.Checkbox("封鎖所有移動", ref C.BlockAllMovement);
+        ImGuiComponents.HelpMarker("按住所指定按鍵時封鎖所有移動。");
         if (C.BlockAllMovement)
         {
             if (C.ControllerMode)
-                DrawKeybind("Block Movement Button", ref C.BlockButton);
+                DrawKeybind("封鎖移動按鈕", ref C.BlockButton);
             else
-                DrawKeybind("Block Movement Key", ref C.BlockKey);
-            ImGuiComponents.HelpMarker("Bind a key to fully block any character movement.");
+                DrawKeybind("封鎖移動按鍵", ref C.BlockKey);
+            ImGuiComponents.HelpMarker("綁定一個按鍵以完全封鎖角色移動。");
         }
         ImGui.Spacing();
         ImGui.Separator();
         ImGui.Spacing();
         if (C.ControllerMode)
-            DrawKeybind("Movement Release Button", ref C.ReleaseButton);
+            DrawKeybind("解除移動鎖定按鈕", ref C.ReleaseButton);
         else
-            DrawKeybind("Movement Release Key", ref C.ReleaseKey);
+            DrawKeybind("解除移動鎖定按鍵", ref C.ReleaseKey);
         ImGuiComponents.HelpMarker("Bind a key to instantly unlock player movement and cancel any channeling cast. Note that movement is only enabled whilst the key is held, therefore a mouse button is recommended.");
-        ImGui.Checkbox($"Permanently Release", ref C.UnlockPermanently);
+        ImGui.Checkbox("永久解除", ref C.UnlockPermanently);
         ImGuiComponents.HelpMarker("Releases player movement - used primarily by the release key setting above.");
-        ImGuiEx.Text($"Release Key Mode:");
+        ImGuiEx.Text("解除按鍵模式：");
         ImGuiComponents.HelpMarker("Switches the movement release key from needing to be held, to becoming a toggle.");
         Spacing();
-        ImGuiEx.RadioButtonBool("Hold", "Toggle", ref C.IsHoldToRelease, true);
+        ImGuiEx.RadioButtonBool("按住", "切換", ref C.IsHoldToRelease, true);
         if (!C.ControllerMode)
         {
             ImGui.Separator();
             ImGui.Spacing();
-            ImGui.Checkbox($"Enable Mouse Button Release", ref C.DisableMouseDisabling);
+            ImGui.Checkbox("啟用滑鼠按鈕解除", ref C.DisableMouseDisabling);
             ImGuiComponents.HelpMarker("Allows emergency movement via holding down MB1 and MB2 simultaneously.");
-            ImGuiEx.TextV($"Movement keys:");
+            ImGuiEx.TextV("移動按鍵：");
             ImGui.SameLine();
             ImGuiEx.SetNextItemWidth(0.8f);
             if (ImGui.BeginCombo($"##movekeys", $"{C.MoveKeys.Print()}"))
@@ -149,7 +149,7 @@ internal static unsafe class UI
         ImGui.Separator();
         ImGui.Spacing();
         ImGui.PushItemWidth(300);
-        ImGuiEx.TextV($"Ground Targeting Hold (seconds):");
+        ImGuiEx.TextV("地面目標停留時間（秒）：");
         ImGui.SameLine();
         ImGui.SetNextItemWidth(100f);
         if (ImGui.InputFloat("###GroundedHoldConfig", ref P.Config.GroundedHold, 0, 0, "%.2g"))
@@ -166,27 +166,27 @@ internal static unsafe class UI
         #endregion
 
         #region Overlay
-        ImGui.TextColored(0xFFFFDCEB, $"Overlay");
-        ImGuiEx.RadioButtonBool("Image-based", "Vector-based", ref C.UseImguiOverlay, true, inverted: true);
+        ImGui.TextColored(0xFFFFDCEB, "顯示層");
+        ImGuiEx.RadioButtonBool("圖片模式", "向量模式", ref C.UseImguiOverlay, true, inverted: true);
         ImGuiGroup.BeginGroupBox();
-        ImGuiEx.Text($"Display Overlay");
+        ImGuiEx.Text("顯示顯示層");
         ImGuiComponents.HelpMarker("Choose when to display the Orbwalker overlay when enabled.");
-        Spacing(true); ImGui.Checkbox($"In Combat", ref C.DisplayBattle);
-        Spacing(true); ImGui.Checkbox($"In Duty", ref C.DisplayDuty);
-        Spacing(true); ImGui.Checkbox($"Always", ref C.DisplayAlways);
+        Spacing(true); ImGui.Checkbox("戰鬥中", ref C.DisplayBattle);
+        Spacing(true); ImGui.Checkbox("任務中", ref C.DisplayDuty);
+        Spacing(true); ImGui.Checkbox("永遠顯示", ref C.DisplayAlways);
         Spacing(true);
         ImGui.SetNextItemWidth(100f);
-        ImGui.SliderFloat($"Overlay scale", ref C.SizeMod.ValidateRange(0.5f, 40f), 0.5f, 4f);
+        ImGui.SliderFloat("顯示層縮放", ref C.SizeMod.ValidateRange(0.5f, 40f), 0.5f, 4f);
         Spacing();
         if(C.UseImguiOverlay)
         {
-            ImGui.Checkbox($"Vertical layout", ref C.DisplayVertical);
+            ImGui.Checkbox("垂直排列", ref C.DisplayVertical);
         }
         else
         {
             var b = false;
             ImGui.BeginDisabled();
-            ImGui.Checkbox("Vertical layout", ref b);
+            ImGui.Checkbox("垂直排列", ref b);
             ImGui.EndDisabled();
         }
         ImGuiComponents.HelpMarker("Display buttons vertically instead of horizontally. Only available with vector-based overlay.");
@@ -195,12 +195,12 @@ internal static unsafe class UI
     }
     static void Jobs()
     {
-        ImGui.TextColored(0xFFFFDCEB, $"Jobs");
+        ImGui.TextColored(0xFFFFDCEB, "職業");
         ImGuiComponents.HelpMarker("Select the jobs you wish to use Orbwalker's movement locking features on. Not all jobs have cast times, but if you have the extra features enabled for the general actions it will apply to those jobs.");
         ImGuiGroup.BeginGroupBox();
-        ImGuiEx.TextV("Toggle:");
+        ImGuiEx.TextV("切換：");
         ImGui.SameLine();
-        if (ImGui.Button("All"))
+        if (ImGui.Button("全部"))
         {
             var jobs = Enum.GetValues<Job>().Where(x => x != Job.ADV);
             var b = jobs.All(x => C.EnabledJobs.TryGetValue(x, out var v) && v);
@@ -211,7 +211,7 @@ internal static unsafe class UI
         }
 
         ImGui.SameLine();
-        if (ImGui.Button($"Casters"))
+        if (ImGui.Button("詠唱職業"))
         {
             var b = Data.CastingJobs.All(x => C.EnabledJobs.TryGetValue(x, out var v) && v);
             foreach (var x in Data.CastingJobs)
@@ -244,7 +244,7 @@ internal static unsafe class UI
         {
             ImGui.SameLine();
             var val = C.EnabledJobs.SafeSelect(Player.Job);
-            if(ImGui.Checkbox($"Current: {Player.Job}", ref val))
+            if(ImGui.Checkbox($"目前職業：{Player.Job}", ref val))
             {
                 C.EnabledJobs[Player.Job] = val;
             }
@@ -359,10 +359,10 @@ internal static unsafe class UI
     static void Extras()
     {
         #region Job Specific Actions
-        ImGui.TextColored(0xFFFFDCEB, $"Job-specific Actions");
+        ImGui.TextColored(0xFFFFDCEB, "職業專用技能");
         ImGuiComponents.HelpMarker($"Actions that are not technically casts but can be interrupted or stopped early due to movement of any kind.");
         ImGuiGroup.BeginGroupBox();
-        ImGuiEx.Text($"Block movement when these actions are active:");
+        ImGuiEx.Text("以下技能作用中時封鎖移動：");
         ImGui.Separator();
         ImGuiEx.Spacing(); ImGui.Checkbox("Passage of Arms (PLD)", ref C.PreventPassage);
         ImGuiEx.Spacing(); ImGui.Checkbox("Flamethrower (MCH)", ref C.PreventFlame);
@@ -374,9 +374,9 @@ internal static unsafe class UI
         #endregion
 
         #region Miscellaneous Casts
-        ImGui.TextColored(0xFFFFDCEB, $"Miscellaneous Casts");
+        ImGui.TextColored(0xFFFFDCEB, "其他詠唱");
         ImGuiGroup.BeginGroupBox();
-        ImGuiEx.Text($"Block movement when these actions are being casted:");
+        ImGuiEx.Text("詠唱以下技能時封鎖移動：");
         ImGui.Separator();
         ImGuiEx.Spacing(); ImGui.Checkbox("Teleport", ref C.BlockTP);
         ImGuiEx.Spacing(); ImGui.Checkbox("Return", ref C.BlockReturn);
@@ -387,7 +387,7 @@ internal static unsafe class UI
         #region PvP
         ImGui.TextColored(0xFFFFDCEB, $"PvP");
         ImGuiGroup.BeginGroupBox();
-        ImGuiEx.Spacing(); ImGui.Checkbox($"Enable PvP Orbwalking", ref C.PVP);
+        ImGuiEx.Spacing(); ImGui.Checkbox("啟用 PvP Orbwalking", ref C.PVP);
         ImGuiComponents.HelpMarker("Allows use when in PvP game modes such as Frontlines and Crystaline Conflict.\n\nThis is considered an unfair advantage over other players so use at your own risk (and conscious).");
         ImGuiEx.Spacing();
         ImGuiGroup.EndGroupBox();
@@ -425,7 +425,7 @@ internal static unsafe class UI
         {
             if (text == KeyInputActive)
             {
-                ImGuiEx.Text(ImGuiColors.DalamudYellow, $"Now press new key...");
+                ImGuiEx.Text(ImGuiColors.DalamudYellow, "現在請按下新的按鍵……");
                 foreach (var x in Enum.GetValues<Keys>())
                 {
                     if (IsKeyPressed((int)x))
@@ -439,11 +439,11 @@ internal static unsafe class UI
             }
             else
             {
-                if (ImGui.Selectable("Auto-detect new key", false, ImGuiSelectableFlags.DontClosePopups))
+                if (ImGui.Selectable("自動偵測新按鍵", false, ImGuiSelectableFlags.DontClosePopups))
                 {
                     KeyInputActive = text;
                 }
-                ImGuiEx.Text($"Select key manually:");
+                ImGuiEx.Text("手動選擇按鍵：");
                 ImGuiEx.SetNextItemFullWidth();
                 ImGuiEx.EnumCombo("##selkeyman", ref key);
             }
@@ -481,7 +481,7 @@ internal static unsafe class UI
         {
             if (text == KeyInputActive)
             {
-                ImGuiEx.Text(ImGuiColors.DalamudYellow, $"Now press new key...");
+                ImGuiEx.Text(ImGuiColors.DalamudYellow, "現在請按下新的按鍵……");
                 foreach (var x in GamePad.ControllerButtons)
                 {
                     if (GamePad.IsButtonPressed(x.Key))
@@ -495,11 +495,11 @@ internal static unsafe class UI
             }
             else
             {
-                if (ImGui.Selectable("Auto-detect new key", false, ImGuiSelectableFlags.DontClosePopups))
+                if (ImGui.Selectable("自動偵測新按鍵", false, ImGuiSelectableFlags.DontClosePopups))
                 {
                     KeyInputActive = text;
                 }
-                ImGuiEx.Text($"Select key manually:");
+                ImGuiEx.Text("手動選擇按鍵：");
                 ImGuiEx.SetNextItemFullWidth();
                 if (ImGui.BeginCombo("##selkeyman", GamePad.ControllerButtons[key]))
                 {
