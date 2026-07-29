@@ -62,8 +62,8 @@ internal static unsafe class UI
         ImGuiGroup.BeginGroupBox();
         ImGuiEx.Text("滑步施法窗口校準");
         ImGuiComponents.HelpMarker(
-            "Switch between automatic slidecast window calibration or manually setting a value.\n\n" +
-            "\"Automatic\" mode is fully reliable, but will always result in smaller slidecast windows. You may also need to manually configure based on current spell speed or network latency."
+            "切換自動校準滑步施法窗口，或手動設定數值。\n\n" +
+            "「自動」模式較可靠，但滑步施法窗口會比較短。你也可以依目前的詠唱速度或網路延遲手動調整。"
             );
         Spacing(!C.IsSlideAuto);
         ImGuiEx.RadioButtonBool("自動", "手動", ref C.IsSlideAuto, true);
@@ -78,9 +78,9 @@ internal static unsafe class UI
         ImGui.Spacing();
         ImGuiEx.Text("Orbwalking 模式");
         ImGuiComponents.HelpMarker(
-            "Switch between two available Orbwalking modes:\n\n " +
-            "\"Slidecast\" mode is the default and simply prevents player movement until the slidecast window is available, locking movement again to begin the next cast. You must be stationary for the first cast in most cases. \n\n" +
-            "\"Slidelock\" mode on the otherhand permanently locks the player from moving while in combat and only allows for movement during the slidecast window. The movement release key is the only way to enable movement when this mode is used."
+            "切換兩種 Orbwalking 模式：\n\n" +
+            "「Slidecast」是預設模式，在滑步施法窗口出現前阻止玩家移動，並在下一次施法開始時再次鎖定。大多數情況下，第一次施法前必須先停止移動。\n\n" +
+            "「Slidelock」會在戰鬥中持續鎖定移動，只允許在滑步施法窗口內移動。使用此模式時，只能透過解除移動鎖定按鍵恢復移動。"
             );
         Spacing();
         if (ImGui.RadioButton("Slidecast", !C.ForceStopMoveCombat))
@@ -99,7 +99,7 @@ internal static unsafe class UI
         {
             P.Memory.EnableDisableBuffer();
         }
-        ImGuiComponents.HelpMarker($"Removes the requirement for the player to be stationary when channeling the first cast by buffering it until movement is halted. This setting may cause strange behavior with plugins such as Redirect or ReAction, or prevent their options from working at all, be warned!");
+        ImGuiComponents.HelpMarker("將第一次施法暫存至停止移動後執行，因此不必事先站定。此設定可能與 Redirect、ReAction 等插件衝突，甚至使其選項失效。");
         ImGui.Spacing();
         ImGui.Separator();
         ImGui.Spacing();
@@ -120,11 +120,11 @@ internal static unsafe class UI
             DrawKeybind("解除移動鎖定按鈕", ref C.ReleaseButton);
         else
             DrawKeybind("解除移動鎖定按鍵", ref C.ReleaseKey);
-        ImGuiComponents.HelpMarker("Bind a key to instantly unlock player movement and cancel any channeling cast. Note that movement is only enabled whilst the key is held, therefore a mouse button is recommended.");
+        ImGuiComponents.HelpMarker("綁定按鍵以立即解除移動鎖定並取消正在進行的詠唱。預設只有按住時才能移動，建議使用滑鼠按鈕。");
         ImGui.Checkbox("永久解除", ref C.UnlockPermanently);
-        ImGuiComponents.HelpMarker("Releases player movement - used primarily by the release key setting above.");
+        ImGuiComponents.HelpMarker("解除玩家移動鎖定，主要搭配上方的解除按鍵使用。");
         ImGuiEx.Text("解除按鍵模式：");
-        ImGuiComponents.HelpMarker("Switches the movement release key from needing to be held, to becoming a toggle.");
+        ImGuiComponents.HelpMarker("將解除移動鎖定按鍵由「按住」改為「切換」。");
         Spacing();
         ImGuiEx.RadioButtonBool("按住", "切換", ref C.IsHoldToRelease, true);
         if (!C.ControllerMode)
@@ -132,7 +132,7 @@ internal static unsafe class UI
             ImGui.Separator();
             ImGui.Spacing();
             ImGui.Checkbox("啟用滑鼠按鈕解除", ref C.DisableMouseDisabling);
-            ImGuiComponents.HelpMarker("Allows emergency movement via holding down MB1 and MB2 simultaneously.");
+            ImGuiComponents.HelpMarker("同時按住滑鼠左鍵與右鍵即可緊急移動。");
             ImGuiEx.TextV("移動按鍵：");
             ImGui.SameLine();
             ImGuiEx.SetNextItemWidth(0.8f);
@@ -160,8 +160,7 @@ internal static unsafe class UI
             if (P.Config.GroundedHold % 0.01f != 0)
                 P.Config.GroundedHold = (float)Math.Round(P.Config.GroundedHold, 2, MidpointRounding.ToNegativeInfinity);
         }
-        ImGuiComponents.HelpMarker($"Spells which have cast times that are also targeted on the ground (mainly found in BLU) register casting as the target appears, and will cancel cast times if moving as it's confirmed. " +
-                                   $"This option forces your character to stop as the target appears for however long as to not cancel the cast pre-emptively.");
+        ImGuiComponents.HelpMarker("需要詠唱且指定地面的技能（主要為青魔法）會在目標圈出現時開始記錄詠唱，確認目標時若正在移動便會取消。此選項會在目標圈出現時強制角色停止指定時間，避免過早取消詠唱。");
         ImGuiGroup.EndGroupBox();
         #endregion
 
@@ -170,7 +169,7 @@ internal static unsafe class UI
         ImGuiEx.RadioButtonBool("圖片模式", "向量模式", ref C.UseImguiOverlay, true, inverted: true);
         ImGuiGroup.BeginGroupBox();
         ImGuiEx.Text("顯示顯示層");
-        ImGuiComponents.HelpMarker("Choose when to display the Orbwalker overlay when enabled.");
+        ImGuiComponents.HelpMarker("選擇啟用 Orbwalker 時顯示層的顯示時機。");
         Spacing(true); ImGui.Checkbox("戰鬥中", ref C.DisplayBattle);
         Spacing(true); ImGui.Checkbox("任務中", ref C.DisplayDuty);
         Spacing(true); ImGui.Checkbox("永遠顯示", ref C.DisplayAlways);
@@ -189,14 +188,14 @@ internal static unsafe class UI
             ImGui.Checkbox("垂直排列", ref b);
             ImGui.EndDisabled();
         }
-        ImGuiComponents.HelpMarker("Display buttons vertically instead of horizontally. Only available with vector-based overlay.");
+        ImGuiComponents.HelpMarker("將按鈕改為垂直排列；僅向量模式可用。");
         ImGuiGroup.EndGroupBox();
         #endregion
     }
     static void Jobs()
     {
         ImGui.TextColored(0xFFFFDCEB, "職業");
-        ImGuiComponents.HelpMarker("Select the jobs you wish to use Orbwalker's movement locking features on. Not all jobs have cast times, but if you have the extra features enabled for the general actions it will apply to those jobs.");
+        ImGuiComponents.HelpMarker("選擇要套用 Orbwalker 移動鎖定功能的職業。並非所有職業都有詠唱，但啟用通用技能的額外功能後也會套用於這些職業。");
         ImGuiGroup.BeginGroupBox();
         ImGuiEx.TextV("切換：");
         ImGui.SameLine();
@@ -360,7 +359,7 @@ internal static unsafe class UI
     {
         #region Job Specific Actions
         ImGui.TextColored(0xFFFFDCEB, "職業專用技能");
-        ImGuiComponents.HelpMarker($"Actions that are not technically casts but can be interrupted or stopped early due to movement of any kind.");
+        ImGuiComponents.HelpMarker("這些技能雖然不是一般詠唱，但仍可能因移動而中斷或提早結束。");
         ImGuiGroup.BeginGroupBox();
         ImGuiEx.Text("以下技能作用中時封鎖移動：");
         ImGui.Separator();
@@ -388,7 +387,7 @@ internal static unsafe class UI
         ImGui.TextColored(0xFFFFDCEB, $"PvP");
         ImGuiGroup.BeginGroupBox();
         ImGuiEx.Spacing(); ImGui.Checkbox("啟用 PvP Orbwalking", ref C.PVP);
-        ImGuiComponents.HelpMarker("Allows use when in PvP game modes such as Frontlines and Crystaline Conflict.\n\nThis is considered an unfair advantage over other players so use at your own risk (and conscious).");
+        ImGuiComponents.HelpMarker("允許在紛爭前線與水晶衝突等 PvP 模式中使用。\n\n這可能被視為對其他玩家的不公平優勢，請自行承擔使用風險。");
         ImGuiEx.Spacing();
         ImGuiGroup.EndGroupBox();
         #endregion
