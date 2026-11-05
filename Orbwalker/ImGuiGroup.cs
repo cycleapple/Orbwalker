@@ -1,4 +1,4 @@
-﻿namespace Orbwalker;
+namespace Orbwalker;
 
 internal static partial class ImGuiGroup
 {
@@ -91,7 +91,7 @@ internal static partial class ImGuiGroup
         if (!autoAdjust)
         {
             var window = GetCurrentWindow();
-            window->CursorMaxPos = window->CursorMaxPos with { X = options.MaxX };
+            window.DC.CursorMaxPos = window.DC.CursorMaxPos with { X = options.MaxX };
         }
 
         ImGui.EndGroup();
@@ -128,21 +128,8 @@ internal static partial class ImGuiGroup
         ImGui.EndGroup();
     }
 
-    [LibraryImport("cimgui")]
-    [UnmanagedCallConv(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
-    private static partial nint igGetCurrentWindow();
-    public static unsafe ImGuiWindow* GetCurrentWindow() => (ImGuiWindow*)igGetCurrentWindow();
-    public static unsafe ImGuiWindowFlags GetCurrentWindowFlags() => GetCurrentWindow()->Flags;
-    public static unsafe bool CurrentWindowHasCloseButton() => GetCurrentWindow()->HasCloseButton != 0;
-
-    [StructLayout(LayoutKind.Explicit)]
-    public struct ImGuiWindow
-    {
-        [FieldOffset(0xC)] public ImGuiWindowFlags Flags;
-
-        [FieldOffset(0xD5)] public byte HasCloseButton;
-
-        // 0x118 is the start of ImGuiWindowTempData
-        [FieldOffset(0x130)] public Vector2 CursorMaxPos;
-    }
+    // Use API14's generated ImGui window layout instead of private byte offsets.
+    public static Dalamud.Bindings.ImGui.ImGuiWindowPtr GetCurrentWindow() => Dalamud.Bindings.ImGui.ImGuiP.GetCurrentWindow();
+    public static ImGuiWindowFlags GetCurrentWindowFlags() => GetCurrentWindow().Flags;
+    public static unsafe bool CurrentWindowHasCloseButton() => GetCurrentWindow().Handle->HasCloseButton != 0;
 }
